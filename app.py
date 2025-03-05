@@ -1,13 +1,23 @@
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+import os
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 
+load_dotenv()
+
 app = Flask(__name__)
 
-# Inicializar Firebase con Firestore
-cred = credentials.Certificate("myappprueba-firebase.json")
+admin=os.getenv("admin")
+admin=json.loads(admin) if admin else {}
+cred = credentials.Certificate(admin)
 firebase_admin.initialize_app(cred)
+
+# Inicializar Firebase con Firestore
+# cred = credentials.Certificate("myappprueba-firebase.json")
+# firebase_admin.initialize_app(cred)
 # firebase_admin.initialize_app(cred, {
 #     'databaseURL': "https://mitest-2d566-default-rtdb.firebaseio.com/"
 # })
@@ -15,9 +25,9 @@ firebase_admin.initialize_app(cred)
 db = firestore.client() # Cliente de Firestore
 TENG_ref = db.collection('TENG')    # Referencia a la colección TENG
 
-# @app.route('/', methods=['get'])
-# def hello():
-#     return "hello"
+@app.route('/')
+def hello():
+    return "hello world"
 
 @app.route('/sensor', methods=['POST'])
 def receive_sensor_data(): # recibir_datos_sensor
